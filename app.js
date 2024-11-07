@@ -3,20 +3,20 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 async function main() {
-  // things later
-
+  /**
+   * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
+   * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
+   */
   const uri =
-    "mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.0yjao.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-  // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+    "mongodb+srv://8harrisl:sEhdTocw5M08w5YN@cluster0.0yjao.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
   const client = new MongoClient(uri);
 
-  await client.connect();
-
-  await listDatabases(client);
-
   try {
+    // Connect to the MongoDB cluster
     await client.connect();
 
+    // Make the appropriate DB calls
     await listDatabases(client);
   } catch (e) {
     console.error(e);
@@ -24,6 +24,7 @@ async function main() {
     await client.close();
   }
 }
+
 main().catch(console.error);
 
 async function listDatabases(client) {
