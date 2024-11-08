@@ -1,20 +1,55 @@
-var express = require("express"),
-  app = express(),
-  port = process.env.PORT || 3000,
-  mongoose = require("mongoose"),
-  Task = require("./api/models/todoListModel"), //created model loading here
-  bodyParser = require("body-parser");
+const express = require("express");
+const path = require("path");
+const app = express();
+const router = express.Router();
 
-// mongoose instance connection url connection
-mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/Tododb");
+app.set("views", path.join(__dirname, "/public/views"));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.set("view engine", "ejs");
 
-var routes = require("./api/routes/todoListRoutes"); //importing route
-routes(app); //register the route
+router.get("/", (req, res) => {
+  res.render("index");
+});
 
-app.listen(port);
+router.get("/home", (req, res) => {
+  res.send("Hello World, This is home router");
+});
 
-console.log("todo list RESTful API server started on: " + port);
+router.get("/profile", (req, res) => {
+  res.send("Hello World, This is profile router");
+});
+
+router.get("/scared", (req, res) => {
+  res.send("i am very worried");
+});
+
+router.get("/curious/:id", (req, res, next) => {
+  res.render("test", { output: req.params.id });
+});
+
+router.get("/login", (req, res) => {
+  res.send("Hello World, This is login router");
+});
+
+router.get("/logout", (req, res) => {
+  res.send("Hello World, This is logout router");
+});
+
+app.use("/", router);
+
+app.use((req, res, next) => {
+  console.log("Time:", Date.now());
+  next();
+});
+app.use((err, req, res, next) => {
+  res.status(500).send("Something broke!", { Error: err.stack });
+});
+
+// app.use(function (err, req, res, next) {
+//   console.log(err.stack);
+//   res.status(404).send("Couldn't find that page :/");
+// });
+
+app.listen(process.env.port || 3000);
+
+console.log("Web Server is listening at port " + (process.env.port || 3000));
